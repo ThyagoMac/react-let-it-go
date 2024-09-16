@@ -1,22 +1,7 @@
+import { LoginType, RegisterType } from "@/types/LoginTypes";
 import Cookies from "js-cookie";
 
 const BASEAPI = "http://alunos.b7web.com.br:501";
-
-export type loginType = {
-  email: string;
-  password: string;
-  token?: string;
-  name?: string;
-  stateLocation?: string;
-};
-
-export type registerType = {
-  email: string;
-  password: string;
-  token?: string;
-  name: string;
-  stateLocation: string;
-};
 
 export const apiFetchPost = async (endpoint: string, body: any) => {
   if (!body.token) {
@@ -64,7 +49,7 @@ export const apiFetchGet = async (endpoint: string, body: any = null) => {
   return json;
 };
 
-export const login = async ({ email, password }: loginType) => {
+export const login = async ({ email, password }: LoginType) => {
   //prevent API//{prevent API
   if (email) {
     let token = Cookies.get("token");
@@ -83,7 +68,7 @@ export const register = async ({
   email,
   stateLocation,
   password,
-}: registerType) => {
+}: RegisterType) => {
   //{prevent API
   if (email) {
     let token = Cookies.get("token");

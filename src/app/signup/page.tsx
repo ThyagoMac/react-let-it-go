@@ -4,10 +4,11 @@ import { Checkbox } from "@/components/inputs/Checkbox";
 import { TextInput } from "@/components/inputs/TextInput";
 import { PageTitle } from "@/components/layout-component/PageTitle";
 import { doLogin } from "@/helpers/AuthHandler";
-import { loginType, register } from "@/services/LoginService";
+import { register } from "@/services/LoginService";
 import { getStates } from "@/services/StatesService";
 import { useEffect, useState } from "react";
 import { StateListType } from "../../types/States";
+import { LoginType } from "@/types/LoginTypes";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -17,7 +18,7 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<loginType>({
+  const [errors, setErrors] = useState<LoginType>({
     email: "",
     password: "",
     name: "",

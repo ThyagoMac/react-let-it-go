@@ -6,6 +6,8 @@ export type AdsType = {
   state: string;
   text: string;
   src: string;
+  category?: string;
+  desc?: string;
   others?: AdsListType;
   dateCreated?: Date;
   views?: number;
@@ -13,3 +15,20 @@ export type AdsType = {
 };
 
 export type AdsListType = AdsType[];
+
+export type AddAdType = {
+  title: string;
+  category: string;
+  price: number;
+  priceNegotiable: boolean;
+  desc: string;
+  images?: string[];
+};
+export type AddAdErrorType = {
+  title: string;
+  category: string;
+  price: string;
+  priceNegotiable: string;
+  desc: string;
+  images?: string;
+};

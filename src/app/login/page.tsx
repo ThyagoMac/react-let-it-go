@@ -4,7 +4,8 @@ import { Checkbox } from "@/components/inputs/Checkbox";
 import { TextInput } from "@/components/inputs/TextInput";
 import { PageTitle } from "@/components/layout-component/PageTitle";
 import { doLogin } from "@/helpers/AuthHandler";
-import { loginType, login } from "@/services/LoginService";
+import { login } from "@/services/LoginService";
+import { LoginType } from "@/types/LoginTypes";
 import { useState } from "react";
 
 export default function Login() {
@@ -12,7 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<loginType>({ email: "", password: "" });
+  const [errors, setErrors] = useState<LoginType>({ email: "", password: "" });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
