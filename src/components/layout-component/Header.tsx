@@ -74,7 +74,7 @@ export const Header = () => {
                 </li>
                 <li>
                   <Link
-                    href="/post-ad"
+                    href="/ads/add-ad"
                     className="block py-1 px-2 rounded-md bg-orange-600 hover:bg-orange-500 transition-all"
                   >
                     Poste um anuncio

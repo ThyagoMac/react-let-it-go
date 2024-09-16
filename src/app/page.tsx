@@ -43,7 +43,6 @@ export default function Home() {
         sort: "desc",
         limit: 8,
       });
-      console.log("recentAdsList: ", recentAdsList);
       setRecentAdsList(recentAdsList);
     };
 
