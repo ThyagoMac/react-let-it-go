@@ -19,21 +19,25 @@ export const mockStates: StateType[] = [
 
 export const mockCategories: CategoryListType = [
   {
+    id: "1",
     img: "https://www.svgrepo.com/show/387188/clothes-suit.svg",
     name: "Roupas",
     bg: "bg-blue-200",
   },
   {
+    id: "2",
     img: "https://www.svgrepo.com/show/533551/car.svg",
     name: "Carros",
     bg: "bg-orange-200",
   },
   {
+    id: "3",
     img: "https://www.svgrepo.com/show/456199/computer-monitor.svg",
     name: "Eletronicos",
     bg: "bg-red-200",
   },
   {
+    id: "4",
     img: "https://www.svgrepo.com/show/119665/soccer-ball.svg",
     name: "Esportes",
     bg: "bg-green-200",

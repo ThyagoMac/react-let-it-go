@@ -25,6 +25,7 @@ export type AddAdType = {
   images?: string[];
 };
 export type AddAdErrorType = {
+  mainErr?: string;
   title: string;
   category: string;
   price: string;
