@@ -89,7 +89,7 @@ export default function Home() {
             <Link
               key={category.img}
               className={`category-item flex gap-2 items-center w-1/5 hover:scale-105 hover:font-bold transition-all`}
-              href={`/ads?cat=${category.name}`}
+              href={`/ads?category=${category.name}`}
             >
               <div
                 className={`bg-gray-200 ${category.bg} p-2 rounded-full w-max`}
