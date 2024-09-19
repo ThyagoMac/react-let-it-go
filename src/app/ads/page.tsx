@@ -1,5 +1,6 @@
 "use client";
 
+import { AdItem } from "@/components/ad/AdItem";
 import { TextInput } from "@/components/inputs/TextInput";
 import { PageTitle } from "@/components/layout-component/PageTitle";
 import { getAds } from "@/services/AdsService";
@@ -11,15 +12,18 @@ import { StateListType } from "@/types/States";
 import { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Ads() {
+  const searchParams = useSearchParams();
+  const pathName = usePathname();
+  const router = useRouter();
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
   const [categoriesList, setCategoriesList] = useState<CategoryListType>([]);
-  const [recentAdsList, setRecentAdsList] = useState<AdsType[]>([]);
+  const [adsList, setAdsList] = useState<AdsType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [stateList, setStateList] = useState<StateListType>([]);
-
-  const searchParams = useSearchParams();
   const [querySearch, setQuerySearch] = useState<string>(
     searchParams.get("search") || ""
   );
@@ -30,11 +34,8 @@ export default function Ads() {
     searchParams.get("category") || ""
   );
 
-  const pathName = usePathname();
-
-  const router = useRouter();
-
   useEffect(() => {
+    setIsLoading(true);
     let queryArr: string[] = [];
     if (querySearch) {
       queryArr.push(`search=${querySearch}`);
@@ -47,11 +48,19 @@ export default function Ads() {
     }
 
     const queryes = queryArr.join("&");
-
     const finalPath = `${pathName}?${queryes}`;
 
     router.replace(finalPath);
-  }, [querySearch, queryState, queryCategory, pathName, router]);
+
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = setTimeout(() => {
+      getAddsList();
+    }, 1200);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [querySearch, queryState, queryCategory]);
 
   useEffect(() => {
     const fetchStates = async () => {
@@ -71,24 +80,25 @@ export default function Ads() {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const fetchRecentAds = async () => {
-      const recentAdsList = await getAds({
-        sort: "desc",
-        limit: 8,
-      });
-      setRecentAdsList(recentAdsList);
-    };
-
-    fetchRecentAds();
-  }, []);
-
   const handleCategoryClick = (category: string) => {
     if (category === queryCategory) {
       setQueryCategory("");
       return;
     }
     setQueryCategory(category);
+  };
+
+  const getAddsList = async () => {
+    setIsLoading(true);
+    const adsList = await getAds({
+      sort: "desc",
+      limit: 9,
+      querySearch,
+      queryState,
+      queryCategory,
+    });
+    setIsLoading(false);
+    setAdsList(adsList);
   };
 
   return (
@@ -158,7 +168,18 @@ export default function Ads() {
             </div>
           </form>
         </aside>
-        <div className="right-side flex-1 bg-green-400">page</div>
+        <div className="right-side flex-1">
+          <h2 className="font-bold text-2xl">Resultados</h2>
+          <div
+            className={`grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 ${
+              isLoading ? "opacity-40" : "opacity-100"
+            }`}
+          >
+            {adsList.map((ad) => (
+              <AdItem className="" key={ad.id} data={ad} />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

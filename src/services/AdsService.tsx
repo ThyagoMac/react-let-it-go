@@ -29,6 +29,11 @@ export const getAds = async (options: any) => {
   const jump = 1;
 
   if (jump === 1) {
+    if (options.limit) {
+      let list = [...mockAdsList];
+
+      return list.splice(0, options.limit);
+    }
     return mockAdsList;
   }
 
