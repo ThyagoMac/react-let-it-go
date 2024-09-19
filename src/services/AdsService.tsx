@@ -28,13 +28,15 @@ const apiFetchFile = async (endpoint: string, body: FormData) => {
 export const getAds = async (options: any) => {
   const jump = 1;
 
-  if (jump === 1) {
-    if (options.limit) {
-      let list = [...mockAdsList];
+  let offset = options.offset || 0;
+  let limit = options.limit || 10;
 
-      return list.splice(0, options.limit);
-    }
-    return mockAdsList;
+  if (jump === 1) {
+    let list = [...mockAdsList];
+
+    list = list.splice(offset, limit);
+
+    return { data: list, total: mockAdsList.length };
   }
 
   const json = await apiFetchGet(`/ad/list`, options);

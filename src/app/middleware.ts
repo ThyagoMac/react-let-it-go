@@ -1,8 +1,6 @@
 import { isLogged } from "@/helpers/AuthHandler";
 import { NextRequest, NextResponse } from "next/server";
 
-console.log("pipi");
-
 // 1. Specify protected and public routes
 const sellerRoutes = ["/test"];
 //const publicRoutes = ["/login", "/signup", "/"];

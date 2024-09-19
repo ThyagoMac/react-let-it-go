@@ -9,9 +9,9 @@ import { getStates } from "@/services/StatesService";
 import { AdsType } from "@/types/AdsTypes";
 import { CategoryListType } from "@/types/Category";
 import { StateListType } from "@/types/States";
-import { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { off } from "process";
 import { useEffect, useRef, useState } from "react";
 
 export default function Ads() {
@@ -22,8 +22,14 @@ export default function Ads() {
 
   const [categoriesList, setCategoriesList] = useState<CategoryListType>([]);
   const [adsList, setAdsList] = useState<AdsType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [stateList, setStateList] = useState<StateListType>([]);
+  const [totalAdsList, setTotalAdsList] = useState<number>(0);
+  const [pageCount, setPageCount] = useState<number>(0);
+  const [pageCountNumbers, setPageCountNumbers] = useState<number[]>([1]);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(3);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
   const [querySearch, setQuerySearch] = useState<string>(
     searchParams.get("search") || ""
   );
@@ -57,6 +63,7 @@ export default function Ads() {
     }
 
     timerRef.current = setTimeout(() => {
+      setCurrentPage(1);
       getAddsList();
     }, 1200);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,6 +87,23 @@ export default function Ads() {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    if (adsList.length > 0) {
+      const finalCount = Math.ceil(totalAdsList / itemsPerPage);
+      const finalNumbers = Array.from({ length: finalCount }, (_, i) => i + 1);
+      setPageCount(finalCount);
+      setPageCountNumbers(finalNumbers);
+      return;
+    }
+    setPageCount(0);
+    setPageCountNumbers([1]);
+  }, [totalAdsList, adsList, itemsPerPage]);
+
+  useEffect(() => {
+    getAddsList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
+
   const handleCategoryClick = (category: string) => {
     if (category === queryCategory) {
       setQueryCategory("");
@@ -90,15 +114,21 @@ export default function Ads() {
 
   const getAddsList = async () => {
     setIsLoading(true);
-    const adsList = await getAds({
+    let offset = 0;
+    offset = (currentPage - 1) * itemsPerPage;
+
+    const res = await getAds({
       sort: "desc",
-      limit: 9,
+      limit: itemsPerPage,
+      offset: offset,
       querySearch,
       queryState,
       queryCategory,
     });
+
     setIsLoading(false);
-    setAdsList(adsList);
+    setAdsList(res.data);
+    setTotalAdsList(res.total);
   };
 
   return (
@@ -170,6 +200,12 @@ export default function Ads() {
         </aside>
         <div className="right-side flex-1">
           <h2 className="font-bold text-2xl">Resultados</h2>
+          <div className="my-5 text-center h-6">
+            {isLoading && <span>Carregando ...</span>}
+            {!isLoading && adsList.length === 0 && (
+              <span>Nenhum anuncio encontrado</span>
+            )}
+          </div>
           <div
             className={`grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 ${
               isLoading ? "opacity-40" : "opacity-100"
@@ -177,6 +213,23 @@ export default function Ads() {
           >
             {adsList.map((ad) => (
               <AdItem className="" key={ad.id} data={ad} />
+            ))}
+          </div>
+          <div className="my-5 flex flex-row gap-2 items-center justify-center">
+            {pageCountNumbers.map((number, index) => (
+              <div
+                key={index}
+                className={`py-2 px-3 text-xs cursor-pointer rounded-sm
+                  ${
+                    number === currentPage
+                      ? "bg-zinc-300 font-bold text-black"
+                      : "hover:bg-zinc-300 hover:font-bold hover:text-black"
+                  }
+                `}
+                onClick={() => setCurrentPage(number)}
+              >
+                {number}
+              </div>
             ))}
           </div>
         </div>

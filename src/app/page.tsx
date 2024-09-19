@@ -43,7 +43,7 @@ export default function Home() {
         sort: "desc",
         limit: 8,
       });
-      setRecentAdsList(recentAdsList);
+      setRecentAdsList(recentAdsList.data);
     };
 
     fetchRecentAds();
